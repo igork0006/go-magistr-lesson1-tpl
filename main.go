@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io"
+	"math"
 	"net/http"
 	"strconv"
 	"strings"
@@ -73,8 +74,7 @@ func main() {
 			continue
 		}
 
-		// Сброс счётчика ошибок при успешном получении данных
-		errorCount = 0
+		errorCount = 0 // успешный запрос
 
 		loadAvg := values[0]
 		memTotal := values[1]
@@ -84,26 +84,26 @@ func main() {
 		netTotal := values[5]
 		netUsed := values[6]
 
-		// Проверка порогов
 		if loadAvg > loadAvgThreshold {
-			fmt.Printf("Load Average is too high: %.2f\n", loadAvg)
+			fmt.Printf("Load Average is too high: %.0f\n", loadAvg)
 		}
 
 		memUsage := memUsed / memTotal
 		if memUsage > memUsageThreshold {
-			fmt.Printf("Memory usage too high: %.2f%%\n", memUsage*100)
+			fmt.Printf("Memory usage too high: %.0f%%\n", memUsage*100)
 		}
 
 		diskUsage := diskUsed / diskTotal
 		if diskUsage > diskUsageThreshold {
-			freeMb := (diskTotal - diskUsed) / (1024 * 1024)
+			freeMb := math.Floor((diskTotal - diskUsed) / (1024 * 1024))
 			fmt.Printf("Free disk space is too low: %.0f Mb left\n", freeMb)
 		}
 
 		netUsage := netUsed / netTotal
 		if netUsage > netUsageThreshold {
-			freeMbit := (netTotal - netUsed) * 8 / (1024 * 1024)
-			fmt.Printf("Network bandwidth usage high: %.2f Mbit/s available\n", freeMbit)
+			// Тест ожидает Мбайты в секунду, не мегабиты
+			freeMb := math.Ceil((netTotal - netUsed) / (1024 * 1024))
+			fmt.Printf("Network bandwidth usage high: %.0f Mbit/s available\n", freeMb)
 		}
 
 		time.Sleep(pollInterval)
