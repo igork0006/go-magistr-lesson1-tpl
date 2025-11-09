@@ -102,8 +102,8 @@ func main() {
 
 		netUsage := netUsed / netTotal
 		if netUsage > netUsageThreshold {
-			freeMbit := math.Ceil((netTotal - netUsed) * 8 / 1_000_000)
-			fmt.Printf("Network bandwidth usage high: %.0f Mbit/s available\n", freeMbit)
+			freeMb := math.Ceil((netTotal - netUsed) / (1024 * 1024))
+			fmt.Printf("Network bandwidth usage high: %.0f Mbit/s available\n", freeMb)
 		}
 
 		time.Sleep(pollInterval)
