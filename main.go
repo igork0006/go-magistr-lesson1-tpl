@@ -90,7 +90,8 @@ func main() {
 
 		memUsage := memUsed / memTotal
 		if memUsage > memUsageThreshold {
-			fmt.Printf("Memory usage too high: %.0f%%\n", memUsage*100)
+			memPercent := math.Floor(memUsage * 100)
+			fmt.Printf("Memory usage too high: %.0f%%\n", memPercent)
 		}
 
 		diskUsage := diskUsed / diskTotal
@@ -101,7 +102,6 @@ func main() {
 
 		netUsage := netUsed / netTotal
 		if netUsage > netUsageThreshold {
-			// Тест ожидает Мбайты в секунду, не мегабиты
 			freeMb := math.Ceil((netTotal - netUsed) / (1024 * 1024))
 			fmt.Printf("Network bandwidth usage high: %.0f Mbit/s available\n", freeMb)
 		}
